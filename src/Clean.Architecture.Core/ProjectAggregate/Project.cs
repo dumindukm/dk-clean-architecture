@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Clean.Architecture.Core.ProjectAggregate
 {
-    public class Project : BaseEntity, IAggregateRoot
+    public class Project : AuditableEntity, IAggregateRoot
     {
         public string Name { get; private set; }
 

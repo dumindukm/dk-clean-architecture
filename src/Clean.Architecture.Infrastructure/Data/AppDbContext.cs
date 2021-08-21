@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.EFCore.Extensions;
@@ -38,6 +39,22 @@ namespace Clean.Architecture.Infrastructure.Data
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
+            foreach (var entry in ChangeTracker.Entries<AuditableEntity>())
+            {
+                switch (entry.State)
+                {
+                    case EntityState.Added:
+                        //entry.Entity.CreatedBy = _currentUserService.UserId;
+                        entry.Entity.Created = DateTime.Now;
+                        break;
+
+                    case EntityState.Modified:
+                        //entry.Entity.LastModifiedBy = _currentUserService.UserId;
+                        entry.Entity.LastModified = DateTime.Now;
+                        break;
+                }
+            }
+
             int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             // ignore events if no dispatcher provided
