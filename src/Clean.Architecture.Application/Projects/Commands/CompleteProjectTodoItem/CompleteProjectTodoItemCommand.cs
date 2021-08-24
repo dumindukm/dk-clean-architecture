@@ -36,7 +36,7 @@ namespace Clean.Architecture.Application.Projects.Commands.CompleteProjectTodoIt
 
             toDoItem.MarkComplete();
             await _projectRepository.UpdateAsync(project);
-
+            await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return Unit.Value;
         }
     }

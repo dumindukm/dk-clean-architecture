@@ -14,9 +14,12 @@ namespace Clean.Architecture.Infrastructure.Data
     // inherit from Ardalis.Specification type
     public class EfRepository<T> : BaseRepository<T>, IReadRepository<T>, IRepository<T> where T : class, IAggregateRoot
     {
-        public EfRepository(AppDbContext dbContext) : base(dbContext)
+        public EfRepository(AppDbContext dbContext, IUnitOfWork unitOfWork) : base(dbContext)
         {
+            this.UnitOfWork = unitOfWork;
         }
+
+        public IUnitOfWork UnitOfWork { get; set; }
     }
     public abstract class BaseRepository<T> :  IRepositoryBase<T>, IReadRepositoryBase<T> where T : class
     {
@@ -114,7 +117,8 @@ namespace Clean.Architecture.Infrastructure.Data
         /// <inheritdoc/>
         public virtual async Task SaveChangesAsync(CancellationToken cancellationToken = default)
         {
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            //await _dbContext.SaveChangesAsync(cancellationToken);
+            throw new NotImplementedException("save changes should be called using IUnitOfWork"); // TODO : Create new interfaces and remove save chnages from the new interface. save changes should be called using IUnitOfWork
         }
 
         /// <inheritdoc/>

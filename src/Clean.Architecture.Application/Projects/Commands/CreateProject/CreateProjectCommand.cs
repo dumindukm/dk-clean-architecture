@@ -26,6 +26,7 @@ namespace Clean.Architecture.Application.Projects.Commands.CreateProject
             var newProject = new Project(request.Name);
 
             var createdProject = await _projectRepository.AddAsync(newProject);
+            await _projectRepository.UnitOfWork.SaveChangesAsync(cancellationToken);
             return createdProject;
         }
     }
