@@ -88,7 +88,7 @@ namespace Clean.Architecture.Infrastructure.Data
         {
             _dbContext.Set<T>().Add(entity);
 
-            await SaveChangesAsync(cancellationToken);
+            // await SaveChangesAsync(cancellationToken);
 
             return entity;
         }

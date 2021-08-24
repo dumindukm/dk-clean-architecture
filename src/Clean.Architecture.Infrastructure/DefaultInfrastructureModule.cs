@@ -50,6 +50,11 @@ namespace Clean.Architecture.Infrastructure
                 .InstancePerLifetimeScope();
 
             builder
+                .RegisterType<UnitOfWork>()
+                .As<IUnitOfWork>()
+                .InstancePerLifetimeScope();
+
+            builder
                 .RegisterType<Mediator>()
                 .As<IMediator>()
                 .InstancePerLifetimeScope();
