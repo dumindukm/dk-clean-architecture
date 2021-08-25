@@ -4,9 +4,11 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ardalis.EFCore.Extensions;
 using Clean.Architecture.Core.ProjectAggregate;
+using Clean.Architecture.Infrastructure.Data.Config;
 using Clean.Architecture.SharedKernel;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 
 namespace Clean.Architecture.Infrastructure.Data
 {
@@ -26,6 +28,8 @@ namespace Clean.Architecture.Infrastructure.Data
 
         public DbSet<ToDoItem> ToDoItems { get; set; }
         public DbSet<Project> Projects { get; set; }
+
+        public DbSet<OutboxMessage> OutboxMessages { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -55,8 +59,35 @@ namespace Clean.Architecture.Infrastructure.Data
                 }
             }
 
+            // add domain event to outboxmessages table
+
+            var entitiesWithEvents = ChangeTracker.Entries<BaseEntity>()
+                .Select(e => e.Entity)
+                .Where(e => e.Events.Any())
+                .ToArray();
+
+            foreach (var entity in entitiesWithEvents)
+            {
+                var events = entity.Events.ToArray();
+                entity.Events.Clear();
+                foreach (var domainEvent in events)
+                {
+                    string type = domainEvent.GetType().FullName;
+                    var data = JsonConvert.SerializeObject(domainEvent);
+                    OutboxMessage outboxMessage = new OutboxMessage(
+                        domainEvent.DateOccurred,
+                        type,
+                        data);
+                    this.OutboxMessages.Add(outboxMessage);
+                }
+            }
+
+
             int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
+            /*
+             * 
+             * Below code is for handle domain events. But we will us eoutbox patteren for this
             // ignore events if no dispatcher provided
             if (_mediator == null) return result;
 
@@ -75,6 +106,7 @@ namespace Clean.Architecture.Infrastructure.Data
                     await _mediator.Publish(domainEvent).ConfigureAwait(false);
                 }
             }
+            */
 
             return result;
         }
