@@ -30,6 +30,11 @@ namespace Clean.Architecture.Infrastructure.Data.Config
         /// </summary>
         public string Data { get; private set; }
 
+        /// <summary>
+        /// This will not include in DBContext. but OutboxMessage table should have this column.
+        /// </summary>
+        //public DateTime ProcessedDate { get; private set; }
+
         private OutboxMessage()
         {
 
