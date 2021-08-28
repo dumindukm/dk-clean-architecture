@@ -263,3 +263,5 @@ Directory.Build.targets
 Packages.props
 
 tests/
+/src/Clean.Architecture.Web/*.sqlite-shm
+/src/Clean.Architecture.Web/*.sqlite-wal

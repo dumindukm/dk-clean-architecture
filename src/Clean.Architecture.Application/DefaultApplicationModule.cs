@@ -7,6 +7,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using FluentValidation;
+using Clean.Architecture.Application.Validation;
 
 namespace Clean.Architecture.Application
 {
@@ -18,6 +20,9 @@ namespace Clean.Architecture.Application
                .AsImplementedInterfaces();
             builder.RegisterAssemblyTypes(typeof(CompleteProjectTodoItemCommandHandler).GetTypeInfo().Assembly)
                 .AsClosedTypesOf(typeof(IRequestHandler<,>));
+            builder.RegisterAssemblyTypes(typeof(CompleteProjectTodoItemCommandHandler).GetTypeInfo().Assembly)
+                .AsClosedTypesOf(typeof(IValidator<>));
+            builder.RegisterGeneric(typeof(CommandValidationBehavior<,>)).As(typeof(IPipelineBehavior<,>));
         }
     }
 }

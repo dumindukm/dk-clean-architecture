@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
 
 namespace Clean.Architecture.Application.Projects.Commands.CreateProject
 {
@@ -14,6 +15,15 @@ namespace Clean.Architecture.Application.Projects.Commands.CreateProject
     {
         public string Name { get; set; }
     }
+
+    public class CreateProjectCommandValidator : AbstractValidator<CreateProjectCommand>
+    {
+        public CreateProjectCommandValidator()
+        {
+            RuleFor(x => x.Name).NotEmpty().WithMessage("Project name is empty");
+        }
+    }
+
     public class CreateProjectCommandHandler : IRequestHandler<CreateProjectCommand, Project>
     {
         private readonly IRepository<Project> _projectRepository;
@@ -31,3 +41,4 @@ namespace Clean.Architecture.Application.Projects.Commands.CreateProject
         }
     }
 }
+

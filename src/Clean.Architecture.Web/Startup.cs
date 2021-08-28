@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi.Models;
+using Hellang.Middleware.ProblemDetails;
+using Clean.Architecture.Web.Validation;
+using Clean.Architecture.Application.Validation;
 
 namespace Clean.Architecture.Web
 {
@@ -54,6 +57,13 @@ namespace Clean.Architecture.Web
 				// optional - default path to view services is /listallservices - recommended to choose your own path
 				config.Path = "/listservices";
 			});
+
+			services.AddProblemDetails(x =>
+			{
+				x.IncludeExceptionDetails = (ctx, env) => _env.EnvironmentName == "Development";
+				x.Map<InvalidCommandException>(ex => new InvalidCommandProblemDetails(ex));
+				//x.Map<BusinessRuleValidationException>(ex => new BusinessRuleValidationExceptionProblemDetails(ex));
+			});
 		}
 
 		public void ConfigureContainer(ContainerBuilder builder)
@@ -66,16 +76,18 @@ namespace Clean.Architecture.Web
 
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
-			if (env.EnvironmentName == "Development")
-			{
-				app.UseDeveloperExceptionPage();
-				app.UseShowAllServicesMiddleware();
-			}
-			else
-			{
-				app.UseExceptionHandler("/Home/Error");
-				app.UseHsts();
-			}
+            if (env.EnvironmentName == "Development")
+            {
+                //app.UseDeveloperExceptionPage();
+                app.UseShowAllServicesMiddleware();
+            }
+            else
+            {
+				app.UseProblemDetails();
+				//app.UseExceptionHandler("/Home/Error");
+                app.UseHsts();
+            }
+
 			app.UseRouting();
 
 			app.UseHttpsRedirection();
