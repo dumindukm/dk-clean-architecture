@@ -13,6 +13,10 @@ using Microsoft.OpenApi.Models;
 using Hellang.Middleware.ProblemDetails;
 using Clean.Architecture.Web.Validation;
 using Clean.Architecture.Application.Validation;
+using Clean.Architecture.Core.Validation;
+using Clean.Architecture.Web.CustomMiddlewares;
+using Clean.Architecture.Web.CustomExtensions;
+using System;
 
 namespace Clean.Architecture.Web
 {
@@ -60,9 +64,11 @@ namespace Clean.Architecture.Web
 
 			services.AddProblemDetails(x =>
 			{
-				x.IncludeExceptionDetails = (ctx, env) => _env.EnvironmentName == "Development";
+				x.IncludeExceptionDetails = (ctx, env) => _env.EnvironmentName == "Development1";
 				x.Map<InvalidCommandException>(ex => new InvalidCommandProblemDetails(ex));
-				//x.Map<BusinessRuleValidationException>(ex => new BusinessRuleValidationExceptionProblemDetails(ex));
+				x.Map<BusinessRuleValidationException>(ex => new BusinessRuleValidationExceptionProblemDetails(ex));
+				x.Map<DomainModelValidationException>(ex => new DomainModelValidationExceptionProblemDetails(ex));
+				x.RethrowAll();
 			});
 		}
 
@@ -73,20 +79,23 @@ namespace Clean.Architecture.Web
 			builder.RegisterModule(new DefaultInfrastructureModule(_env.EnvironmentName == "Development"));
 		}
 
-
 		public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
 		{
-            if (env.EnvironmentName == "Development")
+			app.ConfigureCustomExceptionMiddleware();
+			app.UseProblemDetails();
+			if (env.EnvironmentName == "Development")
             {
-                //app.UseDeveloperExceptionPage();
-                app.UseShowAllServicesMiddleware();
+				//app.UseDeveloperExceptionPage();
+				//app.UseExceptionHandler("/error-local-development");
+				app.UseShowAllServicesMiddleware();
             }
             else
             {
-				app.UseProblemDetails();
-				//app.UseExceptionHandler("/Home/Error");
+				//app.UseProblemDetails();
+				//app.UseExceptionHandler("/error");
                 app.UseHsts();
             }
+
 
 			app.UseRouting();
 

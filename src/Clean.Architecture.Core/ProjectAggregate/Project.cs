@@ -1,4 +1,4 @@
-﻿using Ardalis.GuardClauses;
+﻿using Clean.Architecture.Core.Validation;
 using Clean.Architecture.Core.ProjectAggregate.Events;
 using Clean.Architecture.SharedKernel;
 using Clean.Architecture.SharedKernel.Interfaces;
