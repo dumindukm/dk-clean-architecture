@@ -8,7 +8,7 @@ dotnet ef database update
 # todo
 - [x] Unit of work
 - [x] Api input data validation
-- [ ] Domain data validation
+- [x] Domain data validation
 - [x] Outbox pattern
 
 # Reference

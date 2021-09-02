@@ -75,7 +75,8 @@ namespace Clean.Architecture.Core.Validation
             Guard.Against.Null(input, parameterName);
             if (input == string.Empty)
             {
-                throw new DomainModelValidationException(message, new ArgumentException(message ?? $"Required input {parameterName} was empty.", parameterName));
+                message = message ?? $"Required input {parameterName} was empty.";
+                throw new DomainModelValidationException(message, new ArgumentException(message, parameterName));
             }
 
             return input;
@@ -97,7 +98,8 @@ namespace Clean.Architecture.Core.Validation
             Guard.Against.Null(input, parameterName);
             if (input == Guid.Empty)
             {
-                throw new ArgumentException(message ?? $"Required input {parameterName} was empty.", parameterName);
+                message = message ?? $"Required input {parameterName} was empty.";
+                throw new DomainModelValidationException(message, new ArgumentException(message, parameterName));
             }
 
             return input.Value;
@@ -119,7 +121,8 @@ namespace Clean.Architecture.Core.Validation
             Guard.Against.Null(input, parameterName);
             if (!input.Any())
             {
-                throw new ArgumentException(message ?? $"Required input {parameterName} was empty.", parameterName);
+                message = message ?? $"Required input {parameterName} was empty.";
+                throw new DomainModelValidationException(message,new ArgumentException(message, parameterName));
             }
 
             return input;
@@ -141,7 +144,8 @@ namespace Clean.Architecture.Core.Validation
             Guard.Against.NullOrEmpty(input, parameterName);
             if (String.IsNullOrWhiteSpace(input))
             {
-                throw new ArgumentException(message ?? $"Required input {parameterName} was empty.", parameterName);
+                message = message ?? $"Required input {parameterName} was empty.";
+                throw new DomainModelValidationException(message,new ArgumentException(message , parameterName));
             }
 
             return input;
@@ -296,16 +300,18 @@ namespace Clean.Architecture.Core.Validation
 
             if (comparer.Compare(rangeFrom, rangeTo) > 0)
             {
-                throw new ArgumentException(message ?? $"{nameof(rangeFrom)} should be less or equal than {nameof(rangeTo)}");
+                message = message ?? $"{nameof(rangeFrom)} should be less or equal than {nameof(rangeTo)}";
+                throw new DomainModelValidationException(message, new ArgumentException(message));
             }
 
             if (comparer.Compare(input, rangeFrom) < 0 || comparer.Compare(input, rangeTo) > 0)
             {
                 if (string.IsNullOrEmpty(message))
                 {
-                    throw new ArgumentOutOfRangeException(parameterName, $"Input {parameterName} was out of range");
+                    message = $"Input {parameterName} was out of range";
+                    throw new DomainModelValidationException(message, new ArgumentOutOfRangeException(parameterName, message));
                 }
-                throw new ArgumentOutOfRangeException(message, (Exception?)null);
+                throw new DomainModelValidationException(message, new ArgumentOutOfRangeException(message, (Exception?)null));
             }
 
             return input;
@@ -407,7 +413,8 @@ namespace Clean.Architecture.Core.Validation
         {
             if (EqualityComparer<T>.Default.Equals(input, default(T)))
             {
-                throw new ArgumentException(message ?? $"Required input {parameterName} cannot be zero.", parameterName);
+                message = message ?? $"Required input {parameterName} cannot be zero.";
+                throw new DomainModelValidationException(message , new ArgumentException(message, parameterName));
             }
 
             return input;
@@ -510,7 +517,8 @@ namespace Clean.Architecture.Core.Validation
         {
             if (input.CompareTo(default(T)) < 0)
             {
-                throw new ArgumentException(message ?? $"Required input {parameterName} cannot be negative.", parameterName);
+                message = message ?? $"Required input {parameterName} cannot be negative.";
+                throw new DomainModelValidationException(message, new ArgumentException(message, parameterName));
             }
 
             return input;
@@ -607,7 +615,8 @@ namespace Clean.Architecture.Core.Validation
         {
             if (input.CompareTo(default(T)) <= 0)
             {
-                throw new ArgumentException(message ?? $"Required input {parameterName} cannot be zero or negative.", parameterName);
+                message = message ?? $"Required input {parameterName} cannot be zero or negative.";
+                throw new DomainModelValidationException(message, new ArgumentException(message, parameterName));
             }
 
             return input;
@@ -629,9 +638,9 @@ namespace Clean.Architecture.Core.Validation
             {
                 if (string.IsNullOrEmpty(message))
                 {
-                    throw new InvalidEnumArgumentException(parameterName, Convert.ToInt32(input), typeof(T));
+                    throw new DomainModelValidationException($"InvalidEnumArgumentException {parameterName}", new InvalidEnumArgumentException(parameterName, Convert.ToInt32(input), typeof(T)));
                 }
-                throw new InvalidEnumArgumentException(message);
+                throw new DomainModelValidationException(message, new InvalidEnumArgumentException(message));
             }
 
             return input;
@@ -653,9 +662,9 @@ namespace Clean.Architecture.Core.Validation
             {
                 if (string.IsNullOrEmpty(message))
                 {
-                    throw new InvalidEnumArgumentException(parameterName, Convert.ToInt32(input), typeof(T));
+                    throw new DomainModelValidationException($"InvalidEnumArgumentException {parameterName}", new InvalidEnumArgumentException(parameterName, Convert.ToInt32(input), typeof(T)));
                 }
-                throw new InvalidEnumArgumentException(message);
+                throw new DomainModelValidationException(message, new InvalidEnumArgumentException(message));
             }
 
             return input;
@@ -674,7 +683,8 @@ namespace Clean.Architecture.Core.Validation
         {
             if (EqualityComparer<T>.Default.Equals(input, default(T)!) || input is null)
             {
-                throw new ArgumentException(message ?? $"Parameter [{parameterName}] is default value for type {typeof(T).Name}", parameterName);
+                message = message ?? $"Parameter [{parameterName}] is default value for type {typeof(T).Name}";
+                throw new DomainModelValidationException(message, new ArgumentException(message, parameterName));
             }
 
             return input;
@@ -694,7 +704,8 @@ namespace Clean.Architecture.Core.Validation
         {
             if (input != Regex.Match(input, regexPattern).Value)
             {
-                throw new ArgumentException(message ?? $"Input {parameterName} was not in required format", parameterName);
+                message = message ?? $"Input {parameterName} was not in required format";
+                throw new DomainModelValidationException( message,new ArgumentException(message, parameterName));
             }
 
             return input;
@@ -715,7 +726,8 @@ namespace Clean.Architecture.Core.Validation
         {
             if (!predicate(input))
             {
-                throw new ArgumentException(message ?? $"Input {parameterName} did not satisfy the options", parameterName);
+                message = message ?? $"Input {parameterName} did not satisfy the options";
+                throw new DomainModelValidationException(message, new ArgumentException(message, parameterName));
             }
 
             return input;
@@ -747,9 +759,10 @@ namespace Clean.Architecture.Core.Validation
             {
                 if (string.IsNullOrEmpty(message))
                 {
-                    throw new ArgumentOutOfRangeException(parameterName, message ?? $"Input {parameterName} had out of range item(s)");
+                    message = message ?? $"Input {parameterName} had out of range item(s)";
+                    throw  new DomainModelValidationException(message, new ArgumentOutOfRangeException(parameterName, message));
                 }
-                throw new ArgumentOutOfRangeException(message, (Exception?)null);
+                throw new DomainModelValidationException(message, new ArgumentOutOfRangeException(message, (Exception?)null));
             }
 
             return input;
@@ -890,7 +903,7 @@ namespace Clean.Architecture.Core.Validation
 
             if (input is null)
             {
-                throw new NotFoundException(key, parameterName);
+                throw new DomainModelValidationException($"Key {key} NotFoundException", new NotFoundException(key, parameterName));
             }
 
             return input;
@@ -913,8 +926,7 @@ namespace Clean.Architecture.Core.Validation
 
             if (input is null)
             {
-                // TODO: Can we safely consider that ToString() won't return null for struct?
-                throw new NotFoundException(key.ToString()!, parameterName);
+                throw new DomainModelValidationException($"Key {key} NotFoundException", new NotFoundException(key.ToString()!, parameterName));
             }
 
             return input;
