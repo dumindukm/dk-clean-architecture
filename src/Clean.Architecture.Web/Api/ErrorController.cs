@@ -14,6 +14,7 @@ namespace Clean.Architecture.Web.Api
     public class ErrorController : BaseApiController
     {
         [Route("/error-local-development")]
+        [HttpGet]
         public IActionResult ErrorLocalDevelopment(
         [FromServices] IWebHostEnvironment webHostEnvironment)
         {
@@ -31,6 +32,7 @@ namespace Clean.Architecture.Web.Api
         }
 
         [Route("/error")]
+        [HttpGet]
         public IActionResult Error() => Problem();
     }
 }
