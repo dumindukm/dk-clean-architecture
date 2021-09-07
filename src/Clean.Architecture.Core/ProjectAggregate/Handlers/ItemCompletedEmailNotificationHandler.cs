@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
-using Ardalis.GuardClauses;
+using Clean.Architecture.Core.Validation;
 using Clean.Architecture.Core.Interfaces;
 using Clean.Architecture.Core.ProjectAggregate.Events;
 using MediatR;
