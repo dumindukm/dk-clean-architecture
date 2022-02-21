@@ -6,7 +6,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text.RegularExpressions;
 using JetBrainsNotNullAttribute = JetBrains.Annotations.NotNullAttribute;
-
+#nullable enable
 namespace Clean.Architecture.Core.Validation
 {
     public interface IGuardClause

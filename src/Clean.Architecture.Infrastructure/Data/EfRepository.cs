@@ -8,7 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+#nullable enable
 namespace Clean.Architecture.Infrastructure.Data
 {
     // inherit from Ardalis.Specification type
